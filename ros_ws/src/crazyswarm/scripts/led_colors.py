@@ -6,8 +6,8 @@ from pycrazyswarm import *
 import uav_trajectory
 
 if __name__ == "__main__":
-    swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
-    #swarm = Crazyswarm(crazyflies_yaml="../launch/allCrazyflies.yaml")
+    #swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
+    swarm = Crazyswarm(crazyflies_yaml="../launch/allCrazyflies.yaml")
     #swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
     timeHelper = swarm.timeHelper
     allcfs = swarm.allcfs

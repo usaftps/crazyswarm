@@ -6,9 +6,10 @@ from pycrazyswarm import *
 import uav_trajectory
 
 if __name__ == "__main__":
-    swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
+    rgb_bits = [tuple((x >>k) & 0x1 for k in range(3)) for x in range(8)]
+    #swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
     #swarm = Crazyswarm(crazyflies_yaml="../launch/allCrazyflies.yaml")
-    #swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
+    swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
     timeHelper = swarm.timeHelper
     allcfs = swarm.allcfs
 
@@ -18,8 +19,9 @@ if __name__ == "__main__":
     TRIALS = 1
     TIMESCALE = 1.0
     for i in range(TRIALS):
-        for cf in allcfs.crazyflies:
+        for i, cf in enumerate(allcfs.crazyflies):
             cf.uploadTrajectory(0, 0, traj1)
+            cf.setLEDColor(*rgb_bits[i])
 
         allcfs.takeoff(targetHeight=1.0, duration=2.0)
         timeHelper.sleep(2.5)

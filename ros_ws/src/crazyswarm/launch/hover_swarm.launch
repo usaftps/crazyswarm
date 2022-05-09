@@ -3,7 +3,7 @@
   <arg name="joy_dev" default="/dev/input/js0" />
 
   <rosparam command="load" file="$(find crazyswarm)/launch/crazyflieTypes.yaml" />
-  <rosparam command="load" file="$(find crazyswarm)/launch/crazyflies.yaml" />
+  <rosparam command="load" file="$(find crazyswarm)/launch/TPSCrazyflies.yaml" />
 
   <node pkg="crazyswarm" type="crazyswarm_server" name="crazyswarm_server" output="screen" >
     <rosparam>
@@ -31,7 +31,7 @@
         kalman:
           resetEstimation: 1
       # tracking
-      motion_capture_type: "vicon" # one of none,vicon,optitrack,optitrack_closed_source,qualisys,vrpn
+      motion_capture_type: "none" # one of none,vicon,optitrack,optitrack_closed_source,qualisys,vrpn
       object_tracking_type: "libobjecttracker" # one of motionCapture,libobjecttracker
       send_position_only: False # set to False to send position+orientation; set to True to send position only
       motion_capture_host_name: "vicon"
