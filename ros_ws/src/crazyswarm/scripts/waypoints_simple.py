@@ -17,18 +17,23 @@ WAYPOINTS = np.array([
 
 
 def main():
-    swarm = Crazyswarm()
+    swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
+    #swarm = Crazyswarm(crazyflies_yaml="../launch/allCrazyflies.yaml")
+    #swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
     timeHelper = swarm.timeHelper
-    cf = swarm.allcfs.crazyflies[0]
+    cfs = swarm.allcfs.crazyflies
 
-    cf.takeoff(targetHeight=Z, duration=TAKEOFF_DURATION)
+    for cf in cfs:
+        cf.takeoff(targetHeight=Z, duration=TAKEOFF_DURATION)
     timeHelper.sleep(TAKEOFF_DURATION + 1.0)
 
     for p in WAYPOINTS:
-        cf.goTo(cf.initialPosition + p, yaw=0.0, duration=GOTO_DURATION)
+        for cf in cfs:
+            cf.goTo(cf.initialPosition + p, yaw=0.0, duration=GOTO_DURATION)
         timeHelper.sleep(GOTO_DURATION + 1.0)
 
-    cf.land(targetHeight=0.05, duration=TAKEOFF_DURATION)
+    for cf in cfs:
+        cf.land(targetHeight=0.05, duration=TAKEOFF_DURATION)
     timeHelper.sleep(TAKEOFF_DURATION + 1.0)
 
 
