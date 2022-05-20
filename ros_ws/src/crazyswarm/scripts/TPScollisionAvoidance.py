@@ -1,6 +1,5 @@
 """Demonstration of Buffered Voronoi Cell collision avoidance algorithm."""
 
-from __future__ import print_function
 import argparse
 import time
 
@@ -13,9 +12,7 @@ import pycrazyswarm
 import pycrazyswarm.util as util
 import pycrazyswarm.cfsim.cffirmware as firm
 
-
 Z = 1.0  # Takeoff altitude.
-
 
 def main():
 
@@ -30,7 +27,7 @@ def main():
     )
     group.add_argument(
         "--assign",
-        help=("Use optimal start-goal assignment instead of random."),
+        help="Use optimal start-goal assignment instead of random.",
         action="store_true"
     )
     group.add_argument(
@@ -38,6 +35,11 @@ def main():
         type=int,
         default=1,
         help="Repeat experiment N times, w/o resetting start positions.",
+    )
+    group.add_argument(
+        "--random",
+        help="Use random goal locations",
+        action="store_true"
     )
     args, unknown = parser.parse_known_args()
 
@@ -47,13 +49,16 @@ def main():
         duration = 10.0
 
     # Construct the Crazyswarm objects.
-    rows, cols = 3, 5
-    N = rows * cols
-    crazyflies_yaml = util.grid_yaml(rows, cols, spacing=0.5)
+    crazyflies_yaml = "../launch/TPSCrazyflies.yaml"
     swarm = pycrazyswarm.Crazyswarm(crazyflies_yaml=crazyflies_yaml,
                                     parent_parser=parser)
     timeHelper = swarm.timeHelper
     cfs = swarm.allcfs.crazyflies
+
+    colors = [(0,0,1), (0,1,0), (1,0,0), (0,1,1)]
+    for cf, color in zip(cfs, colors):
+        cf.setParam("ring/effect", 7)
+        cf.setLEDColor(*color)
 
     # Tell the visualizer to draw collision volume ellipsoids. Ellipsoids
     # change from green to red when a collision occurs. Make the radii 
@@ -61,6 +66,7 @@ def main():
     # algorithm as afudge factor.
     #
     # To show collisions on purpose, use --noavoid without --assign.
+    N = len(cfs)
     xy_radius = 0.125
     radii = 1.0 * xy_radius * np.array([1.0, 1.0, 3.0])
     timeHelper.visualizer.showEllipsoids(0.95 * radii)
@@ -87,12 +93,20 @@ def main():
         # Minimum goal distance of 5*radius ensures that robots are never 
         # trying to squeeze too tightly in between two other robots.
         #
-        goals = util.poisson_disk_sample(N, dim=2, mindist=5*xy_radius)
-        goals_z = Z * np.ones(N) + 0.2 * np.random.uniform(-1.0, 1.0, size=N)
-        goals = np.hstack([goals, goals_z[:,None]])
-
         starts = np.stack([cf.position() for cf in cfs])
         starts[:, 2] += Z
+        goals_z = Z * np.ones(N) + 0.2 * np.random.uniform(-1.0, 1.0,
+                                                           size=N)
+        
+        if args.random:
+            goals = util.poisson_disk_sample(N, dim=2, mindist=5*xy_radius)
+
+        else:
+            goals = np.zeros((starts.shape[0], starts.shape[1]-1))
+            for i in range(N):
+                goals[i, 0:2] += starts[((i+N//2)%N), 0:2]
+
+        goals = np.hstack([goals, goals_z[:,None]])
 
         all_pts = np.vstack([goals, starts])
         bbox_min = np.amin(all_pts, axis=0) - 4.0 * xy_radius
@@ -111,7 +125,8 @@ def main():
         # Euclidean^4 to approximate maximum distance even more closely.
         #
         if args.assign:
-            dists = sp.spatial.distance.cdist(starts, goals, "sqeuclidean")
+            dists = sp.spatial.distance.cdist(starts, goals,
+                                              "sqeuclidean")
             _, assignments = sp.optimize.linear_sum_assignment(dists)
             goals = goals[assignments,:]
 

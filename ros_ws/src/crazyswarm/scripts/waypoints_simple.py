@@ -17,9 +17,9 @@ WAYPOINTS = np.array([
 
 
 def main():
-    swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
+    #swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
     #swarm = Crazyswarm(crazyflies_yaml="../launch/allCrazyflies.yaml")
-    #swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
+    swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
     timeHelper = swarm.timeHelper
     cfs = swarm.allcfs.crazyflies
 
