@@ -10,7 +10,8 @@ HOVER_DURATION = 5.0
 def main():
     #swarm = Crazyswarm(crazyflies_yaml="../launch/crazyflies.yaml")
     #swarm = Crazyswarm(crazyflies_yaml="../launch/allCrazyflies.yaml")
-    swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
+    #swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")
+    swarm = Crazyswarm(crazyflies_yaml="../launch/TPS4fly.yaml")        
     timeHelper = swarm.timeHelper
     cfs = swarm.allcfs.crazyflies
 
@@ -18,9 +19,11 @@ def main():
         cf.takeoff(targetHeight=1.0, duration=TAKEOFF_DURATION)
     timeHelper.sleep(TAKEOFF_DURATION + HOVER_DURATION)
 
+
     for cf in cfs:
         cf.land(targetHeight=0.04, duration=2.5)
-    timeHelper.sleep(TAKEOFF_DURATION)
+    timeHelper.sleep(TAKEOFF_DURATION)        
+
 
 
 if __name__ == "__main__":
