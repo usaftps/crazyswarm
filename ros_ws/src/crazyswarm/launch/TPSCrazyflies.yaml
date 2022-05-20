@@ -9,9 +9,9 @@ crazyflies:
     type: default
   - id: 230
     channel: 80
-    initialPosition: [0.5, 0.5, 0.0]
+    initialPosition: [0.5, -0.5, 0.0]
     type: default
   - id: 234
     channel: 80
-    initialPosition: [0.5, -0.5, 0.0]
+    initialPosition: [0.5, 0.5, 0.0]
     type: default    
