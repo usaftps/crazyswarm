@@ -13,15 +13,16 @@ GroupId2 = 2
 TAKEOFF_DURATION = 2.5
 GOTO_DURATION = 3.0
 WAYPOINTS = np.array([
-    (-1.0, 0.0, 0.),
-    (0.0, 1.0, 0.),
-    (1.0, 0.0, 0.),
-    (0.0, -1.0, 0.),
+    (-0.5, 0.0, 0.),
+    (0.0, 0.5, 0.),
+    (0.5, 0.0, 0.),
+    (0.0, -0.5, 0.),
 ])
 
 
 def main():
-    swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")    
+    #swarm = Crazyswarm(crazyflies_yaml="../launch/TPSCrazyflies.yaml")
+    swarm = Crazyswarm(crazyflies_yaml="../launch/TPS4fly.yaml")        
     timeHelper = swarm.timeHelper
     cfs = swarm.allcfs.crazyflies
     N = len(cfs)
@@ -38,19 +39,20 @@ def main():
 
     swarm.allcfs.takeoff(targetHeight=Z, duration=TAKEOFF_DURATION)
     timeHelper.sleep(TAKEOFF_DURATION + 1.0)
-    swarm.allcfs.goTo((0, 0, Z1), 180, duration=GOTO_DURATION, groupMask=GroupId1)
-    swarm.allcfs.goTo((0, 0, Z2), -180, duration=GOTO_DURATION, groupMask=GroupId2)
+    swarm.allcfs.goTo((0, 0, Z1), 0, duration=GOTO_DURATION, groupMask=GroupId1)
+    swarm.allcfs.goTo((0, 0, Z2), 0, duration=GOTO_DURATION, groupMask=GroupId2)
     timeHelper.sleep(2.0)    
 
     for i in range(len(WAYPOINTS)):
         swarm.allcfs.goTo(WAYPOINTS[i], yaw=0.0,
                           duration=GOTO_DURATION, groupMask=GroupId1)
-        swarm.allcfs.goTo(WAYPOINTS[(i+N//2)%N], yaw=0.0,
+        #swarm.allcfs.goTo(WAYPOINTS[(i+N//2)%N], yaw=0.0,
+        swarm.allcfs.goTo(WAYPOINTS[i], yaw=0.0,
                           duration=GOTO_DURATION, groupMask=GroupId2)        
         timeHelper.sleep(GOTO_DURATION + 1.0)
 
-    swarm.allcfs.goTo((0, 0, Z2), 180, duration=GOTO_DURATION, groupMask=GroupId1)
-    swarm.allcfs.goTo((0, 0, Z1), -180, duration=GOTO_DURATION, groupMask=GroupId2)
+    swarm.allcfs.goTo((0, 0, Z2), 0, duration=GOTO_DURATION, groupMask=GroupId1)
+    swarm.allcfs.goTo((0, 0, Z1), 0, duration=GOTO_DURATION, groupMask=GroupId2)
     timeHelper.sleep(2.0)    
         
     swarm.allcfs.land(targetHeight=0.05,
